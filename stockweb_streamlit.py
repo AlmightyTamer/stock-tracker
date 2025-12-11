@@ -7,40 +7,62 @@ import matplotlib.pyplot as plt
 st.title("📈 Param's Stock Tracker")
 
 # Optional: Add a small description
-st.write("Check current stock prices and view historical price charts!")
+st.write("Check current stock prices")
 
 # --- Input box for ticker ---
-ticker = st.text_input("Enter stock ticker symbol (e.g., AAPL, TSLA):")
+ticker = st.text_input("Enter stock:")
 
-if ticker:
+import yfinance as yf
+import matplotlib.pyplot as plt
+
+def check_stock(ticker):
     stock = yf.Ticker(ticker)
-    data_day = stock.history(period="1d")  # for current price
+    data = stock.history(period="1d")
 
-    if not data_day.empty:
-        price = round(data_day["Close"][-1], 2)
-        st.write(f"**{ticker.upper()} current price:** ${price}")
-    else:
-        st.error("Invalid ticker symbol!")
+    if data.empty:
+        print("Invalid ticker symbol!")
+        return
 
-    # --- Choose time period for graph ---
-    st.write("Choose time period for graph:")
-    period = st.selectbox("Select period:", ["1d", "5d", "1mo", "6mo", "1y", "max"])
+    price = round(data["Close"][0], 2)
+    print(f"{ticker.upper()} current price: ${price}")
 
-    # Get historical data
+def show_graph(ticker, period="1mo"):
+    stock = yf.Ticker(ticker)
     data = stock.history(period=period)
 
-    if not data.empty:
-        # Plot with matplotlib
-        fig, ax = plt.subplots(figsize=(10,5))
-        ax.plot(data.index, data["Close"], marker='o')
-        ax.set_title(f"{ticker.upper()} Price Chart ({period})")
-        ax.set_xlabel("Date")
-        ax.set_ylabel("Price ($)")
-        ax.grid(True)
-        st.pyplot(fig)
-    else:
-        st.error("No data available for this period!")
+    if data.empty:
+        print("No data available for graph!")
+        return
 
+    plt.figure(figsize=(10, 5))
+    plt.plot(data.index, data["Close"])
+    plt.title(f"{ticker.upper()} Price Chart ({period})")
+    plt.xlabel("Date")
+    plt.ylabel("Price ($)")
+    plt.grid(True)
+    plt.show()
+
+while True:
+    symbol = input("Enter stock ticker (or 'quit' to exit): ")
+
+    if symbol.lower() == "quit":
+        break
+
+    check_stock(symbol)
+
+    # Ask if they want a graph
+    choice = input("See graph? (y/n): ")
+    if choice.lower() == "y":
+        print("Choose time period:")
+        print("1 = 1 day")
+        print("5 = 5 days")
+        print("1mo = 1 month")
+        print("6mo = 6 months")
+        print("1y = 1 year")
+        print("max = max data")
+
+        period = input("Enter period: ")
+        show_graph(symbol, period)
 # --- Footer ---
 st.markdown("---")
 st.markdown("Created by **Param Tyagi**")
