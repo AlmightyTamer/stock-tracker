@@ -6,15 +6,6 @@ import matplotlib.pyplot as plt
 # --- Title ---
 st.title("📈 Param's Stock Tracker")
 
-# Optional: Add a small description
-st.write("Check current stock prices")
-
-# --- Input box for ticker ---
-ticker = st.text_input("Enter stock:")
-
-import yfinance as yf
-import matplotlib.pyplot as plt
-
 def check_stock(ticker):
     stock = yf.Ticker(ticker)
     data = stock.history(period="1d")
@@ -63,6 +54,7 @@ while True:
 
         period = input("Enter period: ")
         show_graph(symbol, period)
+
 # --- Footer ---
 st.markdown("---")
 st.markdown("Created by **Param Tyagi**")
