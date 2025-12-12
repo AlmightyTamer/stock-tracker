@@ -39,7 +39,7 @@ if ticker:
         ax.grid(True)
         st.pyplot(fig)
     else:
-        st.error("No data available for this period!")
+        st.error("No data available for this period")
 
 # --- Footer ---
 st.markdown("---")
